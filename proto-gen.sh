@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -x -e;
+set -e;
 
 SERVICES_PATH=./protos/services
 API_ENDPOINTS_PATH=./protos/api
