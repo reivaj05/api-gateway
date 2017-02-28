@@ -39,11 +39,11 @@ generate_api_endpoints() {
 
 for x in $(ls -1 "$SERVICES_PATH")
 do
-	generate_services $(spliteroo $x '.' 1) $OUT_PATH
+	generate_services $(spliteroo $x '.' 1)
 done
 
 mkdir -p api/swagger
-for x in $(ls -1 "$API_ENDPOINTS_PATH" | grep -v 'google')
+for x in $(ls -1 "$API_ENDPOINTS_PATH")
 do
-	generate_api_endpoints $(spliteroo $x '.' 1) $OUT_PATH
+	generate_api_endpoints $(spliteroo $x '.' 1)
 done
