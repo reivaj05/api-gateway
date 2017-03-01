@@ -1,0 +1,6 @@
+*.coverprofile
+log/
+*.log
+*.db
+*coverage
+
