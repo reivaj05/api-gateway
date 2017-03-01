@@ -50,16 +50,19 @@ func createCLIApp(options *Options) *cli.App {
 func createAppCommands(commands []*Command) cli.Commands {
 	co := cli.Commands{}
 	for _, command := range commands {
-		co = append(co, cli.Command{
-			Name:  command.Name,
-			Usage: command.Usage,
-			Action: func(c *cli.Context) error {
-				return command.Action()
-			},
-		})
+		co = append(co, createCommand(command))
 	}
 	return co
+}
 
+func createCommand(command *Command) cli.Command {
+	return cli.Command{
+		Name:  command.Name,
+		Usage: command.Usage,
+		Action: func(c *cli.Context) error {
+			return command.Action()
+		},
+	}
 }
 
 func createAppFlags() []*cli.Command {
