@@ -4,9 +4,13 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/reivaj05/apigateway/generator"
+
 	"github.com/reivaj05/apigateway/cli"
 	"github.com/reivaj05/apigateway/server"
 )
+
+// TODO: Validate all things needed(GOPATH is set, etc.)
 
 const appName = "apigateway"
 
@@ -51,6 +55,11 @@ func createCommands() []*cli.Command {
 			Name:   "start",
 			Usage:  "TODO: Set start usage",
 			Action: server.Serve,
+		},
+		&cli.Command{
+			Name:   "create-service",
+			Usage:  "TODO: Set create-service usage",
+			Action: generator.Generate,
 		},
 	}
 }
