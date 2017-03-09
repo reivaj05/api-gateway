@@ -9,7 +9,7 @@ import (
 type Command struct {
 	Name   string
 	Usage  string
-	Action func(args ...interface{}) error
+	Action func(args ...string) error
 }
 
 type StringFlag struct {
@@ -26,7 +26,7 @@ type Options struct {
 	Commands      []*Command
 	StringFlags   []*StringFlag
 	BoolFlags     []*BoolFlag
-	DefaultAction func(args ...interface{}) error
+	DefaultAction func(args ...string) error
 }
 
 func StartCLI(options *Options) error {
@@ -60,9 +60,17 @@ func createCommand(command *Command) cli.Command {
 		Name:  command.Name,
 		Usage: command.Usage,
 		Action: func(c *cli.Context) error {
-			return command.Action()
+			return command.Action(getArgs(c)...)
 		},
 	}
+}
+
+func getArgs(context *cli.Context) (args []string) {
+	cliArgs := context.Args()
+	for i := 0; i < context.NArg(); i++ {
+		args = append(args, cliArgs.Get(0))
+	}
+	return args
 }
 
 func createAppFlags() []*cli.Command {

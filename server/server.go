@@ -21,7 +21,7 @@ type httpServerOptions struct {
 }
 
 // Serve starts grpc and http servers
-func Serve(args ...interface{}) error {
+func Serve(args ...string) error {
 	return startServers(createHTTPServer(), createGRPCServer())
 }
 
