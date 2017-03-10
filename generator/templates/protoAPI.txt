@@ -5,29 +5,29 @@ option go_package = "github.com/reivaj05/apigateway/api/{{ .ServiceName }}/gener
 import "google/api/annotations.proto";
 
 service {{ .ServiceName }} {
-  rpc Get{{ .Resource }}(Id) returns (Info) {
+  rpc Get(Id) returns (Info) {
     option (google.api.http) = {
       get: "/api/v1/{{ .ResourcePath }}/{id}"
     };
   }
-  rpc Get{{ .Resource }}s(Empty) returns (InfoArray) {
+  rpc List(Empty) returns (InfoArray) {
     option (google.api.http) = {
       get: "/api/v1/{{ .ResourcePath }}"
     };
   }
-  rpc Create{{ .Resource }}(CreateRequest) returns (Info) {
+  rpc Create(CreateRequest) returns (Info) {
     option (google.api.http) = {
       post: "/api/v1/{{ .ResourcePath }}"
       body: "*"
     };
   }
-  rpc Update{{ .Resource }}(Id) returns (Info) {
+  rpc Update(Id) returns (Info) {
     option (google.api.http) = {
       put: "/api/v1/{{ .ResourcePath }}/{id}"
       body: "*"
     };
   }
-  rpc Delete{{ .Resource }}(Id) returns (Empty) {
+  rpc Delete(Id) returns (Empty) {
     option (google.api.http) = {
       delete: "/api/v1/{{ .ResourcePath }}/{id}"
     };

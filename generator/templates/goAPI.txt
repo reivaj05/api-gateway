@@ -3,15 +3,15 @@ package {{ .ServiceName }}
 import (
 	"context"
 
-	gen "github.com/agave/backend-base/services/grpc-gateway/src/api/user/generated"
+	gen "github.com/agave/backend-base/services/grpc-gateway/src/api/{{ .ServiceName }}/generated"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"google.golang.org/grpc"
 )
 
-// RegisterHTTPEndpoint callback to register users http endpoint
+// RegisterHTTPEndpoint callback to register {{ .ServiceName }} http endpoint
 func RegisterHTTPEndpoint(ctx context.Context, mux *runtime.ServeMux,
 	endpoint string, opts []grpc.DialOption) (err error) {
 
-	return generated.Register{{ .ServiceName }}ProfileHandlerFromEndpoint(
+	return generated.Register{{ .UpperServiceName }}ProfileHandlerFromEndpoint(
 		ctx, mux, endpoint, opts)
 }
