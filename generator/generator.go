@@ -3,12 +3,62 @@ package generator
 import (
 	"fmt"
 	"os"
+	"text/template"
+
+	"github.com/chuckpreslar/inflect"
+	"github.com/fatih/camelcase"
 )
 
-func Generate(args ...interface{}) error {
-	fmt.Println("TODO: Implement generator")
-	path := joinPath()
-	serviceName := "changeServiceName"
+type generateOptions struct {
+	path          string
+	serviceName   string
+	fileExtension string
+	fileTemplate  string
+	data          interface{}
+}
+
+func (op *generateOptions) getFilePath() string {
+	return op.path + op.serviceName + op.fileExtension
+}
+
+type goAPITemplateData struct {
+	ServiceName      string
+	UpperServiceName string
+}
+
+type protoAPITemplateData struct {
+	ServiceName  string
+	ResourcePath string
+}
+
+func Generate(args ...string) error {
+	if len(args) == 0 {
+		// TODO: CHange msg
+		return fmt.Errorf("Need service name")
+	}
+	basePath := joinPath()
+	for _, serviceName := range args {
+		if err := generateFiles(basePath, serviceName); err != nil {
+			// TODO: CHange msg
+			fmt.Errorf("Service not created skipping", err.Error())
+			// TODO: Implement rollback when creating a service fails
+			rollback(basePath, serviceName)
+		}
+	}
+	// TODO: Create properly template files (protos and go files)
+	// TODO: Implement rest of template files
+	// TODO: Add tests
+	return nil
+}
+
+func joinPath() string {
+	const relativePath = "/src/github.com/reivaj05/apigateway"
+	goPath := os.Getenv("GOPATH")
+	return goPath + relativePath
+}
+
+func generateFiles(path, serviceName string) error {
+	fmt.Println(path, serviceName)
 	if err := generateAPIFile(path, serviceName); err != nil {
 		fmt.Println("api", err)
 		return err
@@ -21,49 +71,80 @@ func Generate(args ...interface{}) error {
 		fmt.Println("protos", err)
 		return err
 	}
-	// TODO: Change to service name
-	// TODO: Implement template files
-	// TODO: Add tests
-
 	return nil
-}
-
-func joinPath() string {
-	const relativePath = "/src/github.com/reivaj05/apigateway"
-	goPath := os.Getenv("GOPATH")
-	return goPath + relativePath
 }
 
 func generateAPIFile(path, serviceName string) error {
 	path += "/api/" + serviceName + "/"
-	return _generateFile(path, serviceName, ".go")
+	return _generateFile(&generateOptions{
+		path:          path,
+		serviceName:   serviceName,
+		fileExtension: ".go",
+		fileTemplate:  "goAPI.txt",
+		data: &goAPITemplateData{
+			ServiceName:      serviceName,
+			UpperServiceName: inflect.Titleize(serviceName),
+		},
+	})
 
 }
 
 func generateServiceFile(path, serviceName string) error {
 	path += "/services/" + serviceName + "/"
-	return _generateFile(path, serviceName, ".go")
+	return _generateFile(&generateOptions{
+		path:          path,
+		serviceName:   serviceName,
+		fileExtension: ".go",
+		fileTemplate:  "goAPI.txt",
+	})
 }
 
 func generateProtoFiles(path, serviceName string) error {
-	pathProtosAPI := path + "/protos/api/"
-	if err := _generateFile(pathProtosAPI, serviceName, ".proto"); err != nil {
+	sp := camelcase.Split(serviceName)[0]
+	if err := _generateFile(&generateOptions{
+		path:          path + "/protos/api/",
+		serviceName:   serviceName,
+		fileExtension: ".proto",
+		fileTemplate:  "protoAPI.txt",
+		data: &protoAPITemplateData{
+			ServiceName:  serviceName,
+			ResourcePath: sp,
+		},
+	}); err != nil {
 		return err
 	}
-	pathProtosServices := path + "/protos/services/"
-	return _generateFile(pathProtosServices, serviceName, ".proto")
+	return _generateFile(&generateOptions{
+		path:          path + "/protos/services/",
+		serviceName:   serviceName,
+		fileExtension: ".proto",
+		fileTemplate:  "protoAPI.txt",
+	})
 }
 
-func _generateFile(path, serviceName, extension string) error {
-	err := os.MkdirAll(path, os.ModePerm)
+func _generateFile(options *generateOptions) error {
+	file, err := _createFile(options)
 	if err != nil {
 		return err
 	}
-	file, err := os.Create(path + serviceName + extension)
+	return _writeTemplateContent(file, options)
+}
+
+func _createFile(options *generateOptions) (*os.File, error) {
+	err := os.MkdirAll(options.path, os.ModePerm)
 	if err != nil {
-		return err
+		return nil, err
 	}
+	return os.Create(options.getFilePath())
+}
+
+func _writeTemplateContent(file *os.File, options *generateOptions) error {
 	defer file.Close()
-	// tmpl := template.Must(template.ParseFiles(path))
-	return nil
+	tmpl := template.Must(template.ParseFiles(
+		"generator/templates/" + options.fileTemplate),
+	)
+	return tmpl.Execute(file, options.data)
+}
+
+func rollback(path, serviceName string) {
+	// TODO: Rollback to previous stable point if something goes wrong
 }
