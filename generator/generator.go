@@ -31,6 +31,9 @@ type protoAPITemplateData struct {
 	ResourcePath string
 }
 
+// TODO: Move to Config
+var templatesPath = "generator/templates/"
+
 func Generate(args ...string) error {
 	if len(args) == 0 {
 		// TODO: CHange msg
@@ -48,6 +51,7 @@ func Generate(args ...string) error {
 	// TODO: Create properly template files (protos and go files)
 	// TODO: Implement rest of template files
 	// TODO: Add tests
+	// TODO: Refactor code when done
 	return nil
 }
 
@@ -140,7 +144,7 @@ func _createFile(options *generateOptions) (*os.File, error) {
 func _writeTemplateContent(file *os.File, options *generateOptions) error {
 	defer file.Close()
 	tmpl := template.Must(template.ParseFiles(
-		"generator/templates/" + options.fileTemplate),
+		templatesPath + options.fileTemplate),
 	)
 	return tmpl.Execute(file, options.data)
 }
