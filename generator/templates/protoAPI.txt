@@ -5,55 +5,69 @@ option go_package = "github.com/reivaj05/apigateway/api/{{ .ServiceName }}/gener
 import "google/api/annotations.proto";
 
 service {{ .ServiceName }} {
-  rpc Get(Id) returns (Info) {
+  rpc Get(GetRequest) returns (GetResponse) {
     option (google.api.http) = {
       get: "/api/v1/{{ .ResourcePath }}/{id}"
     };
   }
-  rpc List(Empty) returns (InfoArray) {
+  rpc List(ListRequest) returns (ListResponse) {
     option (google.api.http) = {
       get: "/api/v1/{{ .ResourcePath }}"
     };
   }
-  rpc Create(CreateRequest) returns (Info) {
+  rpc Create(CreateRequest) returns (CreateResponse) {
     option (google.api.http) = {
       post: "/api/v1/{{ .ResourcePath }}"
       body: "*"
     };
   }
-  rpc Update(Id) returns (Info) {
+  rpc Update(UpdateRequest) returns (UpdateResponse) {
     option (google.api.http) = {
       put: "/api/v1/{{ .ResourcePath }}/{id}"
       body: "*"
     };
   }
-  rpc Delete(Id) returns (Empty) {
+  rpc Delete(DeleteRequest) returns (DeleteResponse) {
     option (google.api.http) = {
       delete: "/api/v1/{{ .ResourcePath }}/{id}"
     };
   }
 }
 
-// message Id {
-// 	string id = 1;
-// }
+message GetRequest {
+  string id = 1;
+}
 
-// message Info {
-//   string id = 1;
-//   string name = 2;
-//   string email = 3;
-//   string role = 4;
-// }
+message GetResponse {
+  
+}
 
-// message InfoArray {
-//   repeated Info users = 1;
-// }
+message ListRequest {
+}
 
-// message CreateRequest {
-//   string name = 1;
-//   string password = 2;
-//   string email = 3;
-//   string role = 4;
-// }
+message ListResponse {
+  
+}
 
-// message Empty {}
+message CreateRequest {
+}
+
+message CreateResponse {
+
+}
+
+message UpdateRequest {
+  string id = 1;
+}
+
+message UpdateResponse {
+
+}
+
+message DeleteRequest {
+  string id = 1;
+}
+
+message DeleteResponse {
+
+}

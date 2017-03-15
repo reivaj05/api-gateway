@@ -8,6 +8,64 @@ import (
 	"google.golang.org/grpc"
 )
 
+
+type serviceImpl struct{}
+
+// Get returns an object based on its id
+func (service *serviceImpl) Get(context.Context, *gen.GetRequest) (*gen.GetResponse, error) {
+
+	fmt.Println("TODO: Implement get")
+	return &gen.GetResponse{
+	}, nil
+}
+
+// List returns a list of objects
+func (service *serviceImpl) List(
+	context.Context, *gen.ListRequest) (*gen.ListResponse, error) {
+
+	fmt.Println("TODO: Implement list")
+	return &gen.ListResponse{
+		objects: []*gen.Response{
+			&gen.Response{
+			},
+			&gen.Response{
+			},
+		},
+	}, nil
+}
+
+// Create creates a new object
+func (service *serviceImpl) Create(
+	context.Context, *gen.CreateRequest) (*gen.CreateResponse, error) {
+
+	fmt.Println("TODO: Implement create")
+	return &gen.CreateResponse{
+	}, nil
+}
+
+// Update updates an existing object
+func (service *serviceImpl) Update(
+	context.Context, *gen.UpdateRequest) (*gen.UpdateResponse, error) {
+
+	fmt.Println("TODO: Implement update")
+	return &gen.UpdateResponse{
+	}, nil
+}
+
+// Delete Deletes an object
+func (service *serviceImpl) Delete(
+	context.Context, *gen.DeleteRequest) (*gen.DeleteResponse, error) {
+
+	fmt.Println("TODO: Implement delete")
+	return &gen.DeleteResponse{}, nil
+}
+
+// RegisterGRPCEndpoint callback to register users grpc endpoint
+func RegisterGRPCEndpoint(grpcServer *grpc.Server) {
+	userGen.RegisterUserServer(grpcServer, &serviceImpl{})
+}
+
+
 // RegisterHTTPEndpoint callback to register {{ .ServiceName }} http endpoint
 func RegisterHTTPEndpoint(ctx context.Context, mux *runtime.ServeMux,
 	endpoint string, opts []grpc.DialOption) (err error) {
