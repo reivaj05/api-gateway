@@ -3,6 +3,7 @@ package generator
 import (
 	"fmt"
 	"os"
+	"os/exec"
 	"text/template"
 
 	"github.com/chuckpreslar/inflect"
@@ -31,7 +32,9 @@ type protoAPITemplateData struct {
 	ResourcePath string
 }
 
+// TODO: Add tests
 // TODO: Move to Config
+// TODO: Refactor code when done
 var templatesPath = "generator/templates/"
 
 func Generate(args ...string) error {
@@ -39,20 +42,23 @@ func Generate(args ...string) error {
 		// TODO: CHange msg
 		return fmt.Errorf("Need service name")
 	}
+	createServices(args...)
+	return runProtoGenScript()
+}
+
+func createServices(args ...string) {
+	// TODO: Create properly template files (protos and go files)
+	// TODO: Implement rest of template files
 	basePath := joinPath()
 	for _, serviceName := range args {
 		if err := generateFiles(basePath, serviceName); err != nil {
-			// TODO: CHange msg
+			// TODO: Change msg
 			fmt.Errorf("Service not created skipping", err.Error())
 			// TODO: Implement rollback when creating a service fails
 			rollback(basePath, serviceName)
 		}
 	}
-	// TODO: Create properly template files (protos and go files)
-	// TODO: Implement rest of template files
-	// TODO: Add tests
-	// TODO: Refactor code when done
-	return nil
+
 }
 
 func joinPath() string {
@@ -67,10 +73,10 @@ func generateFiles(path, serviceName string) error {
 		fmt.Println("api", err)
 		return err
 	}
-	if err := generateServiceFile(path, serviceName); err != nil {
-		fmt.Println("services", err)
-		return err
-	}
+	// if err := generateServiceFile(path, serviceName); err != nil {
+	// 	fmt.Println("services", err)
+	// 	return err
+	// }
 	if err := generateProtoFiles(path, serviceName); err != nil {
 		fmt.Println("protos", err)
 		return err
@@ -117,12 +123,13 @@ func generateProtoFiles(path, serviceName string) error {
 	}); err != nil {
 		return err
 	}
-	return _generateFile(&generateOptions{
-		path:          path + "/protos/services/",
-		serviceName:   serviceName,
-		fileExtension: ".proto",
-		fileTemplate:  "protoAPI.txt",
-	})
+	// return _generateFile(&generateOptions{
+	// 	path:          path + "/protos/services/",
+	// 	serviceName:   serviceName,
+	// 	fileExtension: ".proto",
+	// 	fileTemplate:  "protoAPI.txt",
+	// })
+	return nil
 }
 
 func _generateFile(options *generateOptions) error {
@@ -151,4 +158,9 @@ func _writeTemplateContent(file *os.File, options *generateOptions) error {
 
 func rollback(path, serviceName string) {
 	// TODO: Rollback to previous stable point if something goes wrong
+}
+
+func runProtoGenScript() error {
+	cmd := exec.Command("/bin/sh", "proto-gen.sh")
+	return cmd.Run()
 }
