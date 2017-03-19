@@ -4,7 +4,7 @@ option go_package = "github.com/reivaj05/apigateway/api/{{ .ServiceName }}/gener
 
 import "google/api/annotations.proto";
 
-service {{ .ServiceName }} {
+service {{ .UpperServiceName }} {
   rpc Get(GetRequest) returns (GetResponse) {
     option (google.api.http) = {
       get: "/api/v1/{{ .ResourcePath }}/{id}"
