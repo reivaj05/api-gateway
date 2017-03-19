@@ -68,7 +68,7 @@ func createCommand(command *Command) cli.Command {
 func getArgs(context *cli.Context) (args []string) {
 	cliArgs := context.Args()
 	for i := 0; i < context.NArg(); i++ {
-		args = append(args, cliArgs.Get(0))
+		args = append(args, cliArgs.Get(i))
 	}
 	return args
 }

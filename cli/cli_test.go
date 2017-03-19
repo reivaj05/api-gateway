@@ -47,7 +47,7 @@ func createMockCommands() []*Command {
 	}
 }
 
-func mockAction(args ...interface{}) error {
+func mockAction(args ...string) error {
 	return nil
 }
 
