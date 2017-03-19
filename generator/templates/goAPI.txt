@@ -1,11 +1,12 @@
 package {{ .ServiceName }}
 
 import (
-	"context"
+	"fmt"
 
-	gen "github.com/agave/backend-base/services/grpc-gateway/src/api/{{ .ServiceName }}/generated"
+	gen "github.com/reivaj05/apigateway/api/{{ .ServiceName }}/generated"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"google.golang.org/grpc"
+	"golang.org/x/net/context"
 )
 
 
@@ -25,12 +26,6 @@ func (service *serviceImpl) List(
 
 	fmt.Println("TODO: Implement list")
 	return &gen.ListResponse{
-		objects: []*gen.Response{
-			&gen.Response{
-			},
-			&gen.Response{
-			},
-		},
 	}, nil
 }
 
@@ -60,9 +55,9 @@ func (service *serviceImpl) Delete(
 	return &gen.DeleteResponse{}, nil
 }
 
-// RegisterGRPCEndpoint callback to register users grpc endpoint
+// RegisterGRPCEndpoint callback to register {{ .ServiceName }} grpc endpoint
 func RegisterGRPCEndpoint(grpcServer *grpc.Server) {
-	userGen.RegisterUserServer(grpcServer, &serviceImpl{})
+	gen.Register{{ .UpperServiceName }}Server(grpcServer, &serviceImpl{})
 }
 
 
@@ -70,6 +65,6 @@ func RegisterGRPCEndpoint(grpcServer *grpc.Server) {
 func RegisterHTTPEndpoint(ctx context.Context, mux *runtime.ServeMux,
 	endpoint string, opts []grpc.DialOption) (err error) {
 
-	return generated.Register{{ .UpperServiceName }}ProfileHandlerFromEndpoint(
+	return gen.Register{{ .UpperServiceName }}HandlerFromEndpoint(
 		ctx, mux, endpoint, opts)
 }
