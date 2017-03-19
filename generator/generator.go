@@ -2,8 +2,10 @@ package generator
 
 import (
 	"fmt"
+	"io/ioutil"
 	"os"
 	"os/exec"
+	"strings"
 	"text/template"
 
 	"github.com/chuckpreslar/inflect"
@@ -28,21 +30,28 @@ type goAPITemplateData struct {
 }
 
 type protoAPITemplateData struct {
-	ServiceName  string
-	ResourcePath string
+	ServiceName      string
+	ResourcePath     string
+	UpperServiceName string
+}
+
+type EndpointsData struct {
+	Services []string
 }
 
 // TODO: Add tests
-// TODO: Move to Config
 // TODO: Refactor code when done
+
+// TODO: Move to Config
 var templatesPath = "generator/templates/"
+var protosPath = "protos/api/"
 
 func Generate(args ...string) error {
 	if len(args) == 0 {
-		// TODO: CHange msg
-		return fmt.Errorf("Need service name")
+		return fmt.Errorf("Service name not provided")
 	}
 	createServices(args...)
+	updateServerEndpoints()
 	return runProtoGenScript()
 }
 
@@ -53,7 +62,7 @@ func createServices(args ...string) {
 	for _, serviceName := range args {
 		if err := generateFiles(basePath, serviceName); err != nil {
 			// TODO: Change msg
-			fmt.Errorf("Service not created skipping", err.Error())
+			fmt.Errorf("Service not created rolling back: " + err.Error())
 			// TODO: Implement rollback when creating a service fails
 			rollback(basePath, serviceName)
 		}
@@ -73,6 +82,7 @@ func generateFiles(path, serviceName string) error {
 		fmt.Println("api", err)
 		return err
 	}
+	// TODO: Dont forget to uncomment :D
 	// if err := generateServiceFile(path, serviceName); err != nil {
 	// 	fmt.Println("services", err)
 	// 	return err
@@ -117,12 +127,14 @@ func generateProtoFiles(path, serviceName string) error {
 		fileExtension: ".proto",
 		fileTemplate:  "protoAPI.txt",
 		data: &protoAPITemplateData{
-			ServiceName:  serviceName,
-			ResourcePath: sp,
+			ServiceName:      serviceName,
+			ResourcePath:     sp,
+			UpperServiceName: inflect.Titleize(serviceName),
 		},
 	}); err != nil {
 		return err
 	}
+	// TODO: Dont forget to uncomment :D
 	// return _generateFile(&generateOptions{
 	// 	path:          path + "/protos/services/",
 	// 	serviceName:   serviceName,
@@ -158,6 +170,36 @@ func _writeTemplateContent(file *os.File, options *generateOptions) error {
 
 func rollback(path, serviceName string) {
 	// TODO: Rollback to previous stable point if something goes wrong
+}
+
+func updateServerEndpoints() {
+	services := getServicesNames()
+	_updateServerFiles(&EndpointsData{Services: services})
+
+}
+
+func getServicesNames() (services []string) {
+	files, _ := ioutil.ReadDir(protosPath)
+	for _, file := range files {
+		services = append(services, strings.TrimSuffix(file.Name(), ".proto"))
+	}
+	return services
+}
+
+func _updateServerFiles(data *EndpointsData) {
+	_updateFile(data, "registeredGRPCEndpoints.go", "grpcEndpoints.txt")
+	_updateFile(data, "registeredHTTPEndpoints.go", "httpEndpoints.txt")
+}
+
+func _updateFile(data *EndpointsData, endpointsFile, fileTemplate string) {
+	file, err := os.OpenFile("server/"+endpointsFile, os.O_RDWR, 0660)
+	if err != nil {
+		// rollback(path, serviceName)
+	}
+	if err = _writeTemplateContent(file, &generateOptions{
+		data: data, fileTemplate: fileTemplate}); err != nil {
+		// rollback(path, serviceName)
+	}
 }
 
 func runProtoGenScript() error {
