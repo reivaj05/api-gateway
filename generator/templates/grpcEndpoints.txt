@@ -1,0 +1,14 @@
+package server
+
+import (
+	"google.golang.org/grpc"
+	{{ range $idx, $service := .Services }}
+	"github.com/reivaj05/apigateway/api/{{ $service }}"{{end}}
+)
+
+type registerGRPCEndpoint func(grpcServer *grpc.Server)
+
+var registeredGRPCEndpoints = []registerGRPCEndpoint{
+	{{ range $idx, $service := .Services }}
+	{{ $service }}.RegisterGRPCEndpoint, {{ end }}
+}

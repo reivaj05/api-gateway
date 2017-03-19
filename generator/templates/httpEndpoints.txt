@@ -1,0 +1,18 @@
+package server
+
+import (
+	"golang.org/x/net/context"
+	"google.golang.org/grpc"
+
+	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+	{{ range $idx, $service := .Services }}
+	"github.com/reivaj05/apigateway/api/{{ $service }}"{{end}}
+)
+
+type registerHTTPEndpoint func(ctx context.Context, mux *runtime.ServeMux,
+	endpoint string, opts []grpc.DialOption) (err error)
+
+var registeredHTTPEndpoints = []registerHTTPEndpoint{
+	{{ range $idx, $service := .Services }}
+	{{ $service }}.RegisterHTTPEndpoint, {{end}}
+}
