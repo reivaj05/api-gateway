@@ -1,0 +1,5 @@
+{
+	"logLevel": "INFO",
+	"templatesPath": "generator/templates/",
+	"protosPath": "protos/api/"
+}
