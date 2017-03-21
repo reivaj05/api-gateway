@@ -6,6 +6,7 @@ import (
 
 	"github.com/reivaj05/apigateway/generator"
 
+	"github.com/reivaj05/GoConfig"
 	"github.com/reivaj05/apigateway/cli"
 	"github.com/reivaj05/apigateway/server"
 )
@@ -25,7 +26,19 @@ func setup() {
 }
 
 func startConfig() {
+	if err := GoConfig.Init(createConfigOptions()); err != nil {
+		finishExecution("Error while starting config", map[string]interface{}{
+			"error": err.Error(),
+		})
+	}
+}
 
+func createConfigOptions() *GoConfig.ConfigOptions {
+	return &GoConfig.ConfigOptions{
+		ConfigType: "json",
+		ConfigFile: "config",
+		ConfigPath: ".",
+	}
 }
 
 func startLogger() {

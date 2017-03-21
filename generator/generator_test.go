@@ -5,6 +5,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/reivaj05/GoConfig"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 )
@@ -16,7 +17,12 @@ type GeneratorTestSuite struct {
 
 func (suite *GeneratorTestSuite) SetupSuite() {
 	suite.assert = assert.New(suite.T())
-	templatesPath = "templates/"
+	GoConfig.Init(&GoConfig.ConfigOptions{
+		ConfigType: "json",
+		ConfigFile: "config",
+		ConfigPath: "..",
+	})
+	GoConfig.SetConfigValue("templatesPath", "templates/")
 }
 
 func (suite *GeneratorTestSuite) TearDownSuite() {

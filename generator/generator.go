@@ -10,6 +10,7 @@ import (
 
 	"github.com/chuckpreslar/inflect"
 	"github.com/fatih/camelcase"
+	"github.com/reivaj05/GoConfig"
 )
 
 type generateOptions struct {
@@ -41,10 +42,6 @@ type EndpointsData struct {
 
 // TODO: Add tests
 // TODO: Refactor code when done
-
-// TODO: Move to Config
-var templatesPath = "generator/templates/"
-var protosPath = "protos/api/"
 
 func Generate(args ...string) error {
 	if len(args) == 0 {
@@ -163,7 +160,7 @@ func _createFile(options *generateOptions) (*os.File, error) {
 func _writeTemplateContent(file *os.File, options *generateOptions) error {
 	defer file.Close()
 	tmpl := template.Must(template.ParseFiles(
-		templatesPath + options.fileTemplate),
+		GoConfig.GetConfigStringValue("templatesPath") + options.fileTemplate),
 	)
 	return tmpl.Execute(file, options.data)
 }
@@ -179,7 +176,7 @@ func updateServerEndpoints() {
 }
 
 func getServicesNames() (services []string) {
-	files, _ := ioutil.ReadDir(protosPath)
+	files, _ := ioutil.ReadDir(GoConfig.GetConfigStringValue("protosPath"))
 	for _, file := range files {
 		services = append(services, strings.TrimSuffix(file.Name(), ".proto"))
 	}
