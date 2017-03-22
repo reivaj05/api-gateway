@@ -53,14 +53,12 @@ func Generate(args ...string) error {
 }
 
 func createServices(args ...string) {
-	// TODO: Create properly template files (protos and go files)
+	// TODO: Create properly template files (protos and go files for services)
 	// TODO: Implement rest of template files
 	basePath := joinPath()
 	for _, serviceName := range args {
 		if err := generateFiles(basePath, serviceName); err != nil {
-			// TODO: Change msg
-			fmt.Errorf("Service not created rolling back: " + err.Error())
-			// TODO: Implement rollback when creating a service fails
+			fmt.Errorf("Service not created: " + err.Error())
 			rollback(basePath, serviceName)
 		}
 	}
@@ -74,18 +72,13 @@ func joinPath() string {
 }
 
 func generateFiles(path, serviceName string) error {
-	fmt.Println(path, serviceName)
 	if err := generateAPIFile(path, serviceName); err != nil {
-		fmt.Println("api", err)
 		return err
 	}
-	// TODO: Dont forget to uncomment :D
-	// if err := generateServiceFile(path, serviceName); err != nil {
-	// 	fmt.Println("services", err)
-	// 	return err
-	// }
+	if err := generateServiceFile(path, serviceName); err != nil {
+		return err
+	}
 	if err := generateProtoFiles(path, serviceName); err != nil {
-		fmt.Println("protos", err)
 		return err
 	}
 	return nil
@@ -113,6 +106,10 @@ func generateServiceFile(path, serviceName string) error {
 		serviceName:   serviceName,
 		fileExtension: ".go",
 		fileTemplate:  "goAPI.txt",
+		data: &goAPITemplateData{
+			ServiceName:      serviceName,
+			UpperServiceName: inflect.Titleize(serviceName),
+		},
 	})
 }
 
@@ -131,14 +128,19 @@ func generateProtoFiles(path, serviceName string) error {
 	}); err != nil {
 		return err
 	}
-	// TODO: Dont forget to uncomment :D
-	// return _generateFile(&generateOptions{
-	// 	path:          path + "/protos/services/",
-	// 	serviceName:   serviceName,
-	// 	fileExtension: ".proto",
-	// 	fileTemplate:  "protoAPI.txt",
-	// })
-	return nil
+	return _generateFile(&generateOptions{
+		path:          path + "/protos/services/",
+		serviceName:   serviceName,
+		fileExtension: ".proto",
+		fileTemplate:  "protoService.txt",
+		data: struct {
+			ServiceName      string
+			UpperServiceName string
+		}{
+			ServiceName:      serviceName,
+			UpperServiceName: inflect.Titleize(serviceName),
+		},
+	})
 }
 
 func _generateFile(options *generateOptions) error {
