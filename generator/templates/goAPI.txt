@@ -4,6 +4,8 @@ import (
 	"fmt"
 
 	gen "github.com/reivaj05/apigateway/api/{{ .ServiceName }}/generated"
+	{{ .ServiceName }}Service "github.com/reivaj05/apigateway/services/{{ .ServiceName }}"
+
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"google.golang.org/grpc"
 	"golang.org/x/net/context"
@@ -13,46 +15,93 @@ import (
 type serviceImpl struct{}
 
 // Get returns an object based on its id
-func (service *serviceImpl) Get(context.Context, *gen.GetRequest) (*gen.GetResponse, error) {
+func (service *serviceImpl) Get(
+	ctx context.Context, request *gen.GetRequest) (*gen.GetResponse, error) {
 
-	fmt.Println("TODO: Implement get")
+	response, err := {{ .ServiceName }}Service.Get(formatGetData(request))
+	fmt.Println("TODO: Handle response on your way", response, err)
 	return &gen.GetResponse{
-	}, nil
+	}, err
+}
+
+func formatGetData(request *gen.GetRequest) map[string]interface{}{
+
+	// TODO: Format your own data
+	return map[string]interface{}{
+
+	}
 }
 
 // List returns a list of objects
 func (service *serviceImpl) List(
-	context.Context, *gen.ListRequest) (*gen.ListResponse, error) {
+	ctx context.Context, request *gen.ListRequest) (*gen.ListResponse, error) {
 
-	fmt.Println("TODO: Implement list")
+	response, err := {{ .ServiceName }}Service.List(formatListData(request))
+	fmt.Println("TODO: Handle response on your way", response, err)
 	return &gen.ListResponse{
-	}, nil
+	}, err
+}
+
+func formatListData(request *gen.ListRequest) map[string]interface{}{
+
+	// TODO: Format your own data
+	return map[string]interface{}{
+
+	}
 }
 
 // Create creates a new object
 func (service *serviceImpl) Create(
-	context.Context, *gen.CreateRequest) (*gen.CreateResponse, error) {
+	ctx context.Context, request *gen.CreateRequest) (*gen.CreateResponse, error) {
 
-	fmt.Println("TODO: Implement create")
+	response, err := {{ .ServiceName }}Service.Create(formatCreateData(request))
+	fmt.Println("TODO: Handle response on your way", response, err)
 	return &gen.CreateResponse{
-	}, nil
+	}, err
+}
+
+func formatCreateData(request *gen.CreateRequest) map[string]interface{}{
+
+	// TODO: Format your own data
+	return map[string]interface{}{
+
+	}
 }
 
 // Update updates an existing object
 func (service *serviceImpl) Update(
-	context.Context, *gen.UpdateRequest) (*gen.UpdateResponse, error) {
+	ctx context.Context, request *gen.UpdateRequest) (*gen.UpdateResponse, error) {
 
-	fmt.Println("TODO: Implement update")
+	response, err := {{ .ServiceName }}Service.Update(formatUpdateData(request))
+	fmt.Println("TODO: Handle response on your way", response, err)
 	return &gen.UpdateResponse{
-	}, nil
+	}, err
+}
+
+func formatUpdateData(request *gen.UpdateRequest) map[string]interface{}{
+
+	// TODO: Format your own data
+	return map[string]interface{}{
+
+	}
 }
 
 // Delete Deletes an object
 func (service *serviceImpl) Delete(
-	context.Context, *gen.DeleteRequest) (*gen.DeleteResponse, error) {
+	ctx context.Context, request *gen.DeleteRequest) (*gen.DeleteResponse, error) {
 
-	fmt.Println("TODO: Implement delete")
-	return &gen.DeleteResponse{}, nil
+	response, err := {{ .ServiceName }}Service.Delete(formatDeleteData(request))
+	fmt.Println("TODO: Handle response on your way", response, err)
+	return &gen.DeleteResponse{
+	}, err
+}
+
+func formatDeleteData(request *gen.DeleteRequest) map[string]interface{}{
+
+	// TODO: Format your own data
+	return map[string]interface{}{
+
+	}
 }
 
 // RegisterGRPCEndpoint callback to register {{ .ServiceName }} grpc endpoint

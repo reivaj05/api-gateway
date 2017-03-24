@@ -1,6 +1,8 @@
 package {{ .ServiceName }}Service
 
 import (
+	"fmt"
+
 	gen "github.com/reivaj05/apigateway/services/{{ .ServiceName }}/generated"
 
 	"golang.org/x/net/context"
@@ -8,7 +10,7 @@ import (
 )
 
 var serviceAddress string
-var client *{{ .UpperServiceName }}Client
+var client gen.{{ .UpperServiceName }}Client
 
 func init() {
 	serviceAddress = "YOUR_SERVICE_ADDRESS"	
@@ -16,57 +18,62 @@ func init() {
 
 
 // Get client service implementation
-func Get(id *gen.GetRequest) (*gen.GetResponse, error) {
+func Get(data map[string]interface{}) (*gen.GetResponse, error) {
+	fmt.Println("TODO: Implement get in {{ .ServiceName }} service")
 	conn, err := grpc.Dial(serviceAddress, grpc.WithInsecure())
 	if err != nil {
 		return nil, err
 	}
 	defer conn.Close()
 	client = gen.New{{ .UpperServiceName }}Client(conn)
-	return client.Get(context.TODO(), id)
+	return client.Get(context.TODO(), &gen.GetRequest{})
 }
 
 // List client service implementation
-func List(id *gen.ListRequest) (*gen.ListResponse, error) {
+func List(data map[string]interface{}) (*gen.ListResponse, error) {
+	fmt.Println("TODO: Implement list in {{ .ServiceName }} service")
 	conn, err := grpc.Dial(serviceAddress, grpc.WithInsecure())
 	if err != nil {
 		return nil, err
 	}
 	defer conn.Close()
 	client = gen.New{{ .UpperServiceName }}Client(conn)
-	return client.List(context.TODO(), id)
+	return client.List(context.TODO(), &gen.ListRequest{})
 }
 
 // Create client service implementation
-func Create(id *gen.CreateRequest) (*gen.CreateResponse, error) {
+func Create(data map[string]interface{}) (*gen.CreateResponse, error) {
+	fmt.Println("TODO: Implement create in {{ .ServiceName }} service")
 	conn, err := grpc.Dial(serviceAddress, grpc.WithInsecure())
 	if err != nil {
 		return nil, err
 	}
 	defer conn.Close()
 	client = gen.New{{ .UpperServiceName }}Client(conn)
-	return client.Create(context.TODO(), id)
+	return client.Create(context.TODO(), &gen.CreateRequest{})
 }
 
 // Update client service implementation
-func Update(id *gen.UpdateRequest) (*gen.UpdateResponse, error) {
+func Update(data map[string]interface{}) (*gen.UpdateResponse, error) {
+	fmt.Println("TODO: Implement update in {{ .ServiceName }} service")
 	conn, err := grpc.Dial(serviceAddress, grpc.WithInsecure())
 	if err != nil {
 		return nil, err
 	}
 	defer conn.Close()
 	client = gen.New{{ .UpperServiceName }}Client(conn)
-	return client.Update(context.TODO(), id)
+	return client.Update(context.TODO(), &gen.UpdateRequest{})
 }
 
 // Delete client service implementation
-func Delete(id *gen.DeleteRequest) (*gen.DeleteResponse, error) {
+func Delete(data map[string]interface{}) (*gen.DeleteResponse, error) {
+	fmt.Println("TODO: Implement delete in {{ .ServiceName }} service")
 	conn, err := grpc.Dial(serviceAddress, grpc.WithInsecure())
 	if err != nil {
 		return nil, err
 	}
 	defer conn.Close()
 	client = gen.New{{ .UpperServiceName }}Client(conn)
-	return client.Delete(context.TODO(), id)
+	return client.Delete(context.TODO(), &gen.DeleteRequest{})
 }
 

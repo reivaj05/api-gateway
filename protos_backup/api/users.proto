@@ -1,0 +1,59 @@
+syntax = "proto3";
+package {{ .ServiceName }};
+option go_package = "github.com/reivaj05/apigateway/api/{{ .ServiceName }}/generated";
+
+import "google/api/annotations.proto";
+
+service {{ .ServiceName }} {
+  rpc Get{{ .Resource }}(Id) returns (Info) {
+    option (google.api.http) = {
+      get: "/api/v1/{{ .ResourcePath }}/{id}"
+    };
+  }
+  rpc Get{{ .Resource }}s(Empty) returns (InfoArray) {
+    option (google.api.http) = {
+      get: "/api/v1/{{ .ResourcePath }}"
+    };
+  }
+  rpc Create{{ .Resource }}(CreateRequest) returns (Info) {
+    option (google.api.http) = {
+      post: "/api/v1/{{ .ResourcePath }}"
+      body: "*"
+    };
+  }
+  rpc Update{{ .Resource }}(Id) returns (Info) {
+    option (google.api.http) = {
+      put: "/api/v1/{{ .ResourcePath }}/{id}"
+      body: "*"
+    };
+  }
+  rpc Delete{{ .Resource }}(Id) returns (Empty) {
+    option (google.api.http) = {
+      delete: "/api/v1/{{ .ResourcePath }}/{id}"
+    };
+  }
+}
+
+// message Id {
+// 	string id = 1;
+// }
+
+// message Info {
+//   string id = 1;
+//   string name = 2;
+//   string email = 3;
+//   string role = 4;
+// }
+
+// message InfoArray {
+//   repeated Info users = 1;
+// }
+
+// message CreateRequest {
+//   string name = 1;
+//   string password = 2;
+//   string email = 3;
+//   string role = 4;
+// }
+
+// message Empty {}
