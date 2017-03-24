@@ -1,0 +1,72 @@
+package {{ .ServiceName }}Service
+
+import (
+	gen "github.com/reivaj05/apigateway/services/{{ .ServiceName }}/generated"
+
+	"golang.org/x/net/context"
+	"google.golang.org/grpc"
+)
+
+var serviceAddress string
+var client *{{ .UpperServiceName }}Client
+
+func init() {
+	serviceAddress = "YOUR_SERVICE_ADDRESS"	
+}
+
+
+// Get client service implementation
+func Get(id *gen.GetRequest) (*gen.GetResponse, error) {
+	conn, err := grpc.Dial(serviceAddress, grpc.WithInsecure())
+	if err != nil {
+		return nil, err
+	}
+	defer conn.Close()
+	client = gen.New{{ .UpperServiceName }}Client(conn)
+	return client.Get(context.TODO(), id)
+}
+
+// List client service implementation
+func List(id *gen.ListRequest) (*gen.ListResponse, error) {
+	conn, err := grpc.Dial(serviceAddress, grpc.WithInsecure())
+	if err != nil {
+		return nil, err
+	}
+	defer conn.Close()
+	client = gen.New{{ .UpperServiceName }}Client(conn)
+	return client.List(context.TODO(), id)
+}
+
+// Create client service implementation
+func Create(id *gen.CreateRequest) (*gen.CreateResponse, error) {
+	conn, err := grpc.Dial(serviceAddress, grpc.WithInsecure())
+	if err != nil {
+		return nil, err
+	}
+	defer conn.Close()
+	client = gen.New{{ .UpperServiceName }}Client(conn)
+	return client.Create(context.TODO(), id)
+}
+
+// Update client service implementation
+func Update(id *gen.UpdateRequest) (*gen.UpdateResponse, error) {
+	conn, err := grpc.Dial(serviceAddress, grpc.WithInsecure())
+	if err != nil {
+		return nil, err
+	}
+	defer conn.Close()
+	client = gen.New{{ .UpperServiceName }}Client(conn)
+	return client.Update(context.TODO(), id)
+}
+
+// Delete client service implementation
+func Delete(id *gen.DeleteRequest) (*gen.DeleteResponse, error) {
+	conn, err := grpc.Dial(serviceAddress, grpc.WithInsecure())
+	if err != nil {
+		return nil, err
+	}
+	defer conn.Close()
+	client = gen.New{{ .UpperServiceName }}Client(conn)
+	return client.Delete(context.TODO(), id)
+}
+

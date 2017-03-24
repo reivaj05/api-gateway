@@ -105,7 +105,7 @@ func generateServiceFile(path, serviceName string) error {
 		path:          path,
 		serviceName:   serviceName,
 		fileExtension: ".go",
-		fileTemplate:  "goAPI.txt",
+		fileTemplate:  "goService.txt",
 		data: &goAPITemplateData{
 			ServiceName:      serviceName,
 			UpperServiceName: inflect.Titleize(serviceName),
