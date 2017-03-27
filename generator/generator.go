@@ -59,7 +59,7 @@ func createServices(args ...string) {
 	for _, serviceName := range args {
 		if err := generateFiles(basePath, serviceName); err != nil {
 			fmt.Errorf("Service not created: " + err.Error())
-			rollback(basePath, serviceName)
+			rollback(serviceName)
 		}
 	}
 
@@ -167,8 +167,12 @@ func _writeTemplateContent(file *os.File, options *generateOptions) error {
 	return tmpl.Execute(file, options.data)
 }
 
-func rollback(path, serviceName string) {
-	// TODO: Rollback to previous stable point if something goes wrong
+func rollback(serviceName string) {
+	path := joinPath()
+	os.RemoveAll(path + "/api/" + serviceName)
+	os.RemoveAll(path + "/services/" + serviceName)
+	os.Remove(path + "/protos/api/" + serviceName + ".proto")
+	os.Remove(path + "/protos/services/" + serviceName + ".proto")
 }
 
 func updateServerEndpoints() {
