@@ -1,6 +1,7 @@
 package generator
 
 import (
+	"fmt"
 	"os"
 	"strings"
 	"testing"
@@ -12,11 +13,14 @@ import (
 
 type GeneratorTestSuite struct {
 	suite.Suite
-	assert *assert.Assertions
+	assert          *assert.Assertions
+	mockServiceName string
 }
 
 func (suite *GeneratorTestSuite) SetupSuite() {
 	suite.assert = assert.New(suite.T())
+	suite.mockServiceName = "mockService"
+
 	GoConfig.Init(&GoConfig.ConfigOptions{
 		ConfigType: "json",
 		ConfigFile: "config",
@@ -26,6 +30,7 @@ func (suite *GeneratorTestSuite) SetupSuite() {
 }
 
 func (suite *GeneratorTestSuite) TearDownSuite() {
+	rollback(suite.mockServiceName)
 }
 
 func (suite *GeneratorTestSuite) TestJoinPath() {
@@ -37,25 +42,27 @@ func (suite *GeneratorTestSuite) TestJoinPath() {
 // TODO: Add unsuccessful tests
 func (suite *GeneratorTestSuite) TestGenerateAPIFileSuccessful() {
 	path := joinPath()
-	suite.assert.Nil(generateAPIFile(path, "mockAPIServiceName"))
-	_, err := os.Stat("../api/mockAPIServiceName/mockAPIServiceName.go")
+	suite.assert.Nil(generateAPIFile(path, suite.mockServiceName))
+	_, err := os.Stat(fmt.Sprintf("../api/%s/%s.go",
+		suite.mockServiceName, suite.mockServiceName))
 	suite.assert.False(os.IsNotExist(err))
 }
 
 func (suite *GeneratorTestSuite) TestGenerateServiceFileSuccessful() {
 	path := joinPath()
-	suite.assert.Nil(generateServiceFile(path, "mockServiceName"))
-	_, err := os.Stat("../services/mockServiceName/mockServiceName.go")
+	suite.assert.Nil(generateServiceFile(path, suite.mockServiceName))
+	_, err := os.Stat(fmt.Sprintf("../services/%s/%s.go",
+		suite.mockServiceName, suite.mockServiceName))
 	suite.assert.False(os.IsNotExist(err))
 }
 
 func (suite *GeneratorTestSuite) TestGenerateProtoFilesSuccessful() {
 	path := joinPath()
-	suite.assert.Nil(generateProtoFiles(path, "mockProtoName"))
-	_, err := os.Stat("../protos/api/mockProtoName.proto")
+	suite.assert.Nil(generateProtoFiles(path, suite.mockServiceName))
+	_, err := os.Stat(fmt.Sprintf("../protos/api/%s.proto", suite.mockServiceName))
 	suite.assert.False(os.IsNotExist(err))
-	// _, err = os.Stat("../protos/services/mockProtoName.proto")
-	// suite.assert.False(os.IsNotExist(err))
+	_, err = os.Stat(fmt.Sprintf("../protos/services/%s.proto", suite.mockServiceName))
+	suite.assert.False(os.IsNotExist(err))
 }
 
 func TestGenerator(t *testing.T) {
