@@ -177,7 +177,10 @@ func rollback(serviceName string) {
 
 func updateServerEndpoints() {
 	services := getServicesNames()
-	_updateServerFiles(&EndpointsData{Services: services})
+	if err := updateServerFiles(&EndpointsData{Services: services}); err != nil {
+		// TODO: Rollback
+		// rollback(serviceName)
+	}
 
 }
 
@@ -189,23 +192,24 @@ func getServicesNames() (services []string) {
 	return services
 }
 
-func _updateServerFiles(data *EndpointsData) {
-	_updateFile(data, "registeredGRPCEndpoints.go", "grpcEndpoints.txt")
-	_updateFile(data, "registeredHTTPEndpoints.go", "httpEndpoints.txt")
+func updateServerFiles(data *EndpointsData) error {
+	if err := _updateFile(data, "registeredGRPCEndpoints.go", "grpcEndpoints.txt"); err != nil {
+		return err
+	}
+	return _updateFile(data, "registeredHTTPEndpoints.go", "httpEndpoints.txt")
 }
 
-func _updateFile(data *EndpointsData, endpointsFile, fileTemplate string) {
-	file, err := os.OpenFile("server/"+endpointsFile, os.O_RDWR, 0660)
+func _updateFile(data *EndpointsData, endpointsFile, fileTemplate string) error {
+	serverPath := GoConfig.GetConfigStringValue("serverPath")
+	file, err := os.OpenFile(serverPath+endpointsFile, os.O_RDWR, 0660)
 	if err != nil {
-		// rollback(path, serviceName)
+		return err
 	}
-	if err = _writeTemplateContent(file, &generateOptions{
-		data: data, fileTemplate: fileTemplate}); err != nil {
-		// rollback(path, serviceName)
-	}
+	return _writeTemplateContent(file, &generateOptions{
+		data: data, fileTemplate: fileTemplate})
 }
 
 func runProtoGenScript() error {
-	cmd := exec.Command("/bin/sh", "proto-gen.sh")
+	cmd := exec.Command("/bin/sh", GoConfig.GetConfigStringValue("protoGenPath"))
 	return cmd.Run()
 }
