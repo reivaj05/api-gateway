@@ -1,5 +1,7 @@
 {
 	"logLevel": "INFO",
 	"templatesPath": "generator/templates/",
-	"protosPath": "protos/api/"
+	"protosPath": "protos/api/",
+	"serverPath": "server/",
+	"protoGenPath": "proto-gen-sh",
 }
