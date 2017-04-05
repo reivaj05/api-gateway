@@ -6,8 +6,8 @@ import (
 
 	"github.com/reivaj05/apigateway/generator"
 
+	"github.com/reivaj05/GoCLI"
 	"github.com/reivaj05/GoConfig"
-	"github.com/reivaj05/apigateway/cli"
 	"github.com/reivaj05/apigateway/server"
 )
 
@@ -46,15 +46,15 @@ func startLogger() {
 }
 
 func startApp() {
-	if err := cli.StartCLI(createCLIOptions()); err != nil {
+	if err := GoCLI.StartCLI(createCLIOptions()); err != nil {
 		finishExecution("Error while starting application", map[string]interface{}{
 			"error": err.Error(),
 		})
 	}
 }
 
-func createCLIOptions() *cli.Options {
-	return &cli.Options{
+func createCLIOptions() *GoCLI.Options {
+	return &GoCLI.Options{
 		AppName:       appName,
 		AppUsage:      "TODO: Set app usage",
 		Commands:      createCommands(),
@@ -62,14 +62,14 @@ func createCLIOptions() *cli.Options {
 	}
 }
 
-func createCommands() []*cli.Command {
-	return []*cli.Command{
-		&cli.Command{
+func createCommands() []*GoCLI.Command {
+	return []*GoCLI.Command{
+		&GoCLI.Command{
 			Name:   "start",
 			Usage:  "TODO: Set start usage",
 			Action: server.Serve,
 		},
-		&cli.Command{
+		&GoCLI.Command{
 			Name:   "create-service",
 			Usage:  "TODO: Set create-service usage",
 			Action: generator.Generate,

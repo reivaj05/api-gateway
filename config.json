@@ -3,5 +3,5 @@
 	"templatesPath": "generator/templates/",
 	"protosPath": "protos/api/",
 	"serverPath": "server/",
-	"protoGenPath": "proto-gen-sh",
+	"protoGenPath": "proto-gen.sh"
 }
