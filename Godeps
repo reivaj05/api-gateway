@@ -1,4 +1,7 @@
-github.com/stretchr/testify	v1.1.4
-github.com/urfave/cli		v1.19.1
+github.com/stretchr/testify		v1.1.4
+github.com/reivaj05/GoCLI 		v0.0.1
+github.com/reivaj05/GoConfig 	v0.0.3
+github.com/chuckpreslar/inflect
+github.com/fatih/camelcase
 google.golang.org/grpc
 golang.org/x/net/context
